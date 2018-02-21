@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Windows.Interop;
 
 namespace DeskhanTop.Views
 {
@@ -19,9 +10,28 @@ namespace DeskhanTop.Views
     /// </summary>
     public partial class SettingsView : Window
     {
+        [DllImport("user32.dll")]
+        private static extern int GetWindowLong(IntPtr windowHandle, int index);
+
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr windowHandle, int index, int newValue);
+
         public SettingsView()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// WinAPI call to remove the maximize button
+        /// </summary>
+        private void OnWindowSourceInitialized(object sender, EventArgs e)
+        {
+            //-16 is GWL_STYLE, which retrieves the window style
+            int gwlStyle = -16;
+            IntPtr handle = new WindowInteropHelper((Window)sender).Handle;
+            int value = GetWindowLong(handle, gwlStyle);
+            //Flip the WS_MAXIMIZEBOX bit
+            SetWindowLong(handle, gwlStyle, value & ~0x10000);
         }
     }
 }
