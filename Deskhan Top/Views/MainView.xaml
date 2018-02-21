@@ -1,0 +1,30 @@
+﻿<Window x:Class="DeskhanTop.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:DeskhanTop.ViewModels"
+        xmlns:views="clr-namespace:DeskhanTop.Views"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:local="clr-namespace:DeskhanTop"
+        mc:Ignorable="d"
+        DataContext="{Binding Source={x:Static vm:MainViewModel.Instance}}"
+        ShowInTaskbar="False"
+        Visibility="Hidden"
+        WindowStyle="None"
+        Title="MainWindow">
+    <Grid>
+        <tb:TaskbarIcon x:Name="DeskhanTopIcon"
+                    DataContext="{Binding TaskbarIconVM}"
+                    IconSource="/Deskhan Top;component/Images/iconuls.ico"
+                    Visibility="Visible"
+                    ToolTipText="Deskhan Top">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Settings" Command="{Binding SettingsCommand}"/>
+                    <MenuItem Header="Quit" Command="{Binding QuitCommand}"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Grid>
+</Window>
