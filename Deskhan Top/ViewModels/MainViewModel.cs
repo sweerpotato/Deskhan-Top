@@ -12,8 +12,14 @@ namespace DeskhanTop.ViewModels
     {
         #region Properties and Fields
 
+        /// <summary>
+        /// Lazy instantiation of this class, triggered by the DataContext binding in xaml
+        /// </summary>
         private static readonly Lazy<MainViewModel> _Instance = new Lazy<MainViewModel>(() => new MainViewModel());
 
+        /// <summary>
+        /// Retrieves the instance of this class
+        /// </summary>
         public static MainViewModel Instance
         {
             get
@@ -22,12 +28,18 @@ namespace DeskhanTop.ViewModels
             }
         }
 
+        /// <summary>
+        /// ViewModel of the Taskbar Icon
+        /// </summary>
         public TaskbarIconViewModel TaskbarIconVM
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// ViewModel of the Settings
+        /// </summary>
         public SettingsViewModel SettingsVM
         {
             get;
@@ -51,11 +63,21 @@ namespace DeskhanTop.ViewModels
 
         #region Event Handlers
 
+        /// <summary>
+        /// Event handler which triggers the shutdown of the application
+        /// </summary>
+        /// <param name="sender">The event's sender</param>
+        /// <param name="e">EventArgs, ignored</param>
         private void ApplicationExitRequested(object sender, EventArgs e)
         {
             Application.Current.Shutdown();
         }
 
+        /// <summary>
+        /// Event handler which requests the application to create an instance of SettingsView
+        /// </summary>
+        /// <param name="sender">The event's sender, ignored</param>
+        /// <param name="e">EventArgs, ignored</param>
         private void SettingsWindowRequested(object sender, EventArgs e)
         {
             App.Mediator.RequestWindow(SettingsVM, typeof(SettingsView));

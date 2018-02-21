@@ -10,12 +10,18 @@ namespace DeskhanTop.ViewModels
     {
         #region Commands
 
+        /// <summary>
+        /// Command which requests the shutdown of the Application
+        /// </summary>
         public RelayCommand QuitCommand
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Command which requests the settings Window
+        /// </summary>
         public RelayCommand SettingsCommand
         {
             get;
@@ -35,11 +41,17 @@ namespace DeskhanTop.ViewModels
 
         #region Command Execution
 
+        /// <summary>
+        /// Requests the shutdown of the application
+        /// </summary>
         private void ExecuteQuitCommand()
         {
             QuitApplicationRequested(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Requests the settings Window to be shown
+        /// </summary>
         private void ExecuteShowSettingsCommand()
         {
             ShowSettingsRequested(this, EventArgs.Empty);
@@ -51,8 +63,14 @@ namespace DeskhanTop.ViewModels
 
         #region Events
 
+        /// <summary>
+        /// Event raised when the shutdown of the application is requested
+        /// </summary>
         public event EventHandler QuitApplicationRequested = delegate { };
 
+        /// <summary>
+        /// Event raised when the settings Window is requested to be shown
+        /// </summary>
         public event EventHandler ShowSettingsRequested = delegate { };
 
         #endregion

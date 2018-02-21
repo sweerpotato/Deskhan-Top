@@ -13,6 +13,9 @@ namespace DeskhanTop
     {
         #region Fields
 
+        /// <summary>
+        /// Mediator which can request new Windows to be opened, separating them from the ViewModel layer
+        /// </summary>
         public static WindowMediator Mediator = new WindowMediator();
 
         #endregion
@@ -29,6 +32,12 @@ namespace DeskhanTop
 
         #region Event Handlers
 
+        /// <summary>
+        /// Event handler which listens to the Mediator's WindowRequested event, creates a new Window of the specified type with
+        /// the DataContext provided
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WindowRequested(object sender, WindowRequestEventArgs e)
         {
             Window window = (Window)Activator.CreateInstance(e.WindowType);
