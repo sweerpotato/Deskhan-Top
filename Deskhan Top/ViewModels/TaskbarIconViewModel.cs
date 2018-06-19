@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Windows.Threading;
-using MVMBase;
-using MVMBase.Commands;
+using DeskhanTop.Commands;
 
 namespace DeskhanTop.ViewModels
 {
@@ -13,7 +10,7 @@ namespace DeskhanTop.ViewModels
         /// <summary>
         /// Command which requests the shutdown of the Application
         /// </summary>
-        public RelayCommand QuitCommand
+        public RelayCommand<TaskbarIconViewModel> QuitCommand
         {
             get;
             private set;
@@ -22,7 +19,7 @@ namespace DeskhanTop.ViewModels
         /// <summary>
         /// Command which requests the settings Window
         /// </summary>
-        public RelayCommand SettingsCommand
+        public RelayCommand<TaskbarIconViewModel> SettingsCommand
         {
             get;
             private set;
@@ -30,11 +27,21 @@ namespace DeskhanTop.ViewModels
 
         #endregion
 
-        public TaskbarIconViewModel() :
-            base()
+        public TaskbarIconViewModel()
+            : base()
         {
-            QuitCommand = new RelayCommand(ExecuteQuitCommand);
-            SettingsCommand = new RelayCommand(ExecuteShowSettingsCommand);
+            QuitCommand = new RelayCommand<TaskbarIconViewModel>(ExecuteQuitCommand, () => { return true; });
+            SettingsCommand = new RelayCommand<TaskbarIconViewModel>(
+                this,
+                ExecuteShowSettingsCommand,
+                () =>
+                {
+                    return MainViewModel.Instance.ApplicationState == ApplicationStates.Main;
+                },
+                (tbvm) => new
+                {
+                    MainViewModel.Instance.ApplicationState
+                });
         }
 
         #region Methods
@@ -54,6 +61,8 @@ namespace DeskhanTop.ViewModels
         /// </summary>
         private void ExecuteShowSettingsCommand()
         {
+            MainViewModel.Instance.ApplicationState = ApplicationStates.DisplayingSettings;
+
             ShowSettingsRequested(this, EventArgs.Empty);
         }
 

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DeskhanTop.Commands;
 using DeskhanTop.Models;
-using MVMBase;
 
 namespace DeskhanTop.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {
+        #region Properties and Fields
+
         private SettingsModel _SettingsModel = null;
 
         private string _WindowTitle = String.Empty;
@@ -25,10 +23,41 @@ namespace DeskhanTop.ViewModels
             }
         }
 
+        #region Commands
+
+        public RelayCommand<SettingsViewModel> WindowClosingCommand
+        {
+            get;
+            private set;
+        }
+
+        #endregion
+
+        #endregion
+        
+        #region Constructor
+
         public SettingsViewModel(SettingsModel settingsModel)
         {
             _SettingsModel = settingsModel;
-            WindowTitle = "This is Window Test";
+            WindowTitle = "Settings";
+            WindowClosingCommand = new RelayCommand<SettingsViewModel>(
+                ExecuteWindowClosingCommand,
+                () => { return true; });
         }
+
+        #endregion
+
+        #region Command Execution
+
+        private void ExecuteWindowClosingCommand()
+        {
+            if (MainViewModel.Instance.ApplicationState == ApplicationStates.DisplayingSettings)
+            {
+                MainViewModel.Instance.ApplicationState = ApplicationStates.Main;
+            }
+        }
+
+        #endregion
     }
 }

@@ -12,13 +12,20 @@
         ShowInTaskbar="False"
         Visibility="Hidden"
         WindowStyle="None"
+        Topmost="False"
         Title="MainWindow">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding ExecutePrintScreenCommand}"
+                Modifiers="{Binding ExecutePrintScreenCommand.KeyGesture.Modifiers}"
+                Key="{Binding ExecutePrintScreenCommand.KeyGesture.Key}"/>
+    </Window.InputBindings>
     <Grid>
         <tb:TaskbarIcon x:Name="DeskhanTopIcon"
                     DataContext="{Binding TaskbarIconVM}"
                     IconSource="/Deskhan Top;component/Images/iconuls.ico"
                     Visibility="Visible"
-                    ToolTipText="Deskhan Top">
+                    ToolTipText="Deskhan Top"
+                    DoubleClickCommand="{Binding SettingsCommand}">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Settings" Command="{Binding SettingsCommand}"/>

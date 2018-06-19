@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
-using System.Windows.Threading;
+using System.Windows.Input;
+using DeskhanTop.Commands;
+using DeskhanTop.Keyboard;
 using DeskhanTop.Models;
 using DeskhanTop.Views;
-using MVMBase;
 
 namespace DeskhanTop.ViewModels
 {
@@ -28,6 +28,21 @@ namespace DeskhanTop.ViewModels
             }
         }
 
+        private ApplicationStates _ApplicationState = ApplicationStates.Initializing;
+        public ApplicationStates ApplicationState
+        {
+            get
+            {
+                return _ApplicationState;
+            }
+            set
+            {
+                SetField(ref _ApplicationState, value);
+            }
+        }
+
+        private KeyboardListener _KeyboardListener = new KeyboardListener();
+
         /// <summary>
         /// ViewModel of the Taskbar Icon
         /// </summary>
@@ -46,22 +61,59 @@ namespace DeskhanTop.ViewModels
             private set;
         }
 
-        #endregion
+        #region Commands
 
-        #region Constructor
-
-        private MainViewModel() :
-            base()
+        public KeyboundRelayCommand<MainViewModel> PrintScreenCommand
         {
-            TaskbarIconVM = new TaskbarIconViewModel();
-            SettingsVM = new SettingsViewModel(new SettingsModel());
-            TaskbarIconVM.QuitApplicationRequested += ApplicationExitRequested;
-            TaskbarIconVM.ShowSettingsRequested += SettingsWindowRequested;
+            get;
+            private set;
         }
 
         #endregion
 
+        #endregion
+
+        #region Constructor
+
+        private MainViewModel()
+            : base()
+        {
+            TaskbarIconVM = new TaskbarIconViewModel();
+            SettingsVM = new SettingsViewModel(new SettingsModel());
+            PrintScreenCommand = new KeyboundRelayCommand<MainViewModel>(
+                ExecutePrintScreenCommand,
+                new KeyGesture(Key.F1, ModifierKeys.Control),
+                () => { return true; });
+
+            TaskbarIconVM.QuitApplicationRequested += ApplicationExitRequested;
+            TaskbarIconVM.ShowSettingsRequested += SettingsWindowRequested;
+            _KeyboardListener.KeyDown += KeyboardKeyDown;
+
+            ApplicationState = ApplicationStates.Main;
+        }
+
+        #endregion
+
+        #region Methods
+
+        #region Command Execution
+
+        private void ExecutePrintScreenCommand()
+        {
+            //TODO: Implement and test later
+            Console.WriteLine("ACTUALLY WORKED");
+        }
+
+        #endregion
+
+        #endregion
+
         #region Event Handlers
+
+        private void KeyboardKeyDown(object sender, RawKeyEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Key.ToString());
+        }
 
         /// <summary>
         /// Event handler which triggers the shutdown of the application
