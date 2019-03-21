@@ -4,6 +4,7 @@
     {
         Initializing,
         Main,
+        Printing,
         DisplayingSettings
     }
 }

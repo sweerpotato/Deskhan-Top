@@ -1,17 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeskhanTop.Keyboard
 {
     internal static class KeyInterceptor
     {
         public delegate IntPtr LowLevelKeyboardProcedure(int nCode, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProcedure lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr GetModuleHandle(string lpModuleName);
 
         #region Fields
 
@@ -22,6 +31,8 @@ namespace DeskhanTop.Keyboard
         private static LowLevelKeyboardProcedure _CallbackRef = null;
 
         #endregion
+
+        #region Methods
 
         public static IntPtr Hook(LowLevelKeyboardProcedure procedure)
         {
@@ -36,18 +47,7 @@ namespace DeskhanTop.Keyboard
             }
         }
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProcedure lpfn, IntPtr hMod, uint dwThreadId);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr GetModuleHandle(string lpModuleName);
+        #endregion
     }
 
     public class KeyboardListener : IDisposable
@@ -62,7 +62,11 @@ namespace DeskhanTop.Keyboard
 
         public KeyboardListener()
         {
-            _HookID = KeyInterceptor.Hook(HookCallback);
+            //The last hook will be garbage collected if we assign it again
+            if (_HookID == IntPtr.Zero)
+            {
+                _HookID = KeyInterceptor.Hook(HookCallback);
+            }
         }
 
         ~KeyboardListener()
@@ -110,8 +114,9 @@ namespace DeskhanTop.Keyboard
 
         #region Events
 
-        public event EventHandler<RawKeyEventArgs> KeyDown = delegate { };
-        public event EventHandler<RawKeyEventArgs> KeyUp = delegate { };
+        public static event EventHandler<RawKeyEventArgs> KeyDown = delegate { };
+
+        public static event EventHandler<RawKeyEventArgs> KeyUp = delegate { };
 
         #endregion
 

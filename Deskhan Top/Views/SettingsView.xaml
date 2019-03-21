@@ -18,6 +18,10 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        
+        <DockPanel Margin="5">
+            <TextBlock VerticalAlignment="Top" Text="Hotkey: " DockPanel.Dock="Left"/>
+            <TextBox VerticalAlignment="Top" Margin="5,0,0,0"
+                     Text="{Binding HotkeyText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </DockPanel>
     </Grid>
 </Window>

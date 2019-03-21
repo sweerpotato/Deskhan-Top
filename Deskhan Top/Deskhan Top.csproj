@@ -38,6 +38,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -77,6 +78,7 @@
     <Compile Include="Commands\KeyboundRelayCommand.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Keyboard\KeyboardListener.cs" />
+    <Compile Include="Keyboard\HotkeyManager.cs" />
     <Compile Include="Keyboard\RawKeyEventArgs.cs" />
     <Compile Include="ViewModels\Base\ViewModelBase.cs" />
     <Compile Include="Views\MainView.xaml.cs">

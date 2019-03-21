@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using DeskhanTop.Commands;
@@ -59,17 +60,9 @@ namespace DeskhanTop.ViewModels
         {
             get;
             private set;
-        }
+        } = null;
 
-        #region Commands
-
-        public KeyboundRelayCommand<MainViewModel> PrintScreenCommand
-        {
-            get;
-            private set;
-        }
-
-        #endregion
+        private SettingsModel _SettingsModel = new SettingsModel();
 
         #endregion
 
@@ -79,15 +72,15 @@ namespace DeskhanTop.ViewModels
             : base()
         {
             TaskbarIconVM = new TaskbarIconViewModel();
-            SettingsVM = new SettingsViewModel(new SettingsModel());
-            PrintScreenCommand = new KeyboundRelayCommand<MainViewModel>(
-                ExecutePrintScreenCommand,
-                new KeyGesture(Key.F1, ModifierKeys.Control),
-                () => { return true; });
 
             TaskbarIconVM.QuitApplicationRequested += ApplicationExitRequested;
             TaskbarIconVM.ShowSettingsRequested += SettingsWindowRequested;
-            _KeyboardListener.KeyDown += KeyboardKeyDown;
+
+            HotkeyManager.HotkeyPressed += OnHotkeyPressed;
+            HotkeyManager.RegisterHotkey(new[] { Key.LeftCtrl, Key.D4 });
+
+            KeyboardListener.KeyUp += OnKeyboardKeyUp;
+            KeyboardListener.KeyDown += OnKeyboardKeyDown;
 
             ApplicationState = ApplicationStates.Main;
         }
@@ -100,8 +93,7 @@ namespace DeskhanTop.ViewModels
 
         private void ExecutePrintScreenCommand()
         {
-            //TODO: Implement and test later
-            Console.WriteLine("ACTUALLY WORKED");
+
         }
 
         #endregion
@@ -110,9 +102,32 @@ namespace DeskhanTop.ViewModels
 
         #region Event Handlers
 
-        private void KeyboardKeyDown(object sender, RawKeyEventArgs e)
+        private void OnKeyboardKeyDown(object sender, RawKeyEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(e.Key.ToString());
+            if (ApplicationState != ApplicationStates.Main)
+            {
+                return;
+            }
+
+            HotkeyManager.Press(e.Key);
+        }
+
+        private void OnKeyboardKeyUp(object sender, RawKeyEventArgs e)
+        {
+            if (ApplicationState != ApplicationStates.Main)
+            {
+                return;
+            }
+
+            HotkeyManager.Release(e.Key);
+        }
+
+        /// <summary>
+        /// Event handler for the HotkeyPressed event from HotkeyManager
+        /// </summary>
+        private void OnHotkeyPressed(object sender, EventArgs e)
+        {
+            Console.WriteLine("ACTUALLY WORKED");
         }
 
         /// <summary>
@@ -132,7 +147,7 @@ namespace DeskhanTop.ViewModels
         /// <param name="e">EventArgs, ignored</param>
         private void SettingsWindowRequested(object sender, EventArgs e)
         {
-            App.Mediator.RequestWindow(SettingsVM, typeof(SettingsView));
+            App.Mediator.RequestWindow(new SettingsViewModel(_SettingsModel), typeof(SettingsView));
         }
 
         #endregion

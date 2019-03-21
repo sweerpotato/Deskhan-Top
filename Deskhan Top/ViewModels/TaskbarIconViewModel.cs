@@ -30,7 +30,10 @@ namespace DeskhanTop.ViewModels
         public TaskbarIconViewModel()
             : base()
         {
-            QuitCommand = new RelayCommand<TaskbarIconViewModel>(ExecuteQuitCommand, () => { return true; });
+            QuitCommand = new RelayCommand<TaskbarIconViewModel>(ExecuteQuitCommand, () =>
+            {
+                return true;
+            });
             SettingsCommand = new RelayCommand<TaskbarIconViewModel>(
                 this,
                 ExecuteShowSettingsCommand,
